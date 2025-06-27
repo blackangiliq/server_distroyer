@@ -8,7 +8,7 @@ pip3 install requests aiohttp
 
 # Download the script
 echo "📥 Downloading script..."
-curl -s -L "https://raw.githubusercontent.com/blackangiliq/server_distroyer/main/brutal_server_stress_test.py" -o stress_test.py
+curl -s -L "https://raw.githubusercontent.com/blackangiliq/server_distroyer/main/linux_load_test.py" -o stress_test.py
 
 # Run the script
 echo "🚀 Starting stress test..."
