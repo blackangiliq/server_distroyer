@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -- coding: utf-8 --
 """
-🔥 BRUTAL SERVER STRESS TEST 🔥
+🔥 fuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuck 🔥
 Ultimate DoS attack using all system resources - merciless brutality
 Designed to push server to complete breakdown
 """
