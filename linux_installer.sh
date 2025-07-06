@@ -2,7 +2,7 @@
 
 # Simple stress test runner
 echo "🔥 Installing requirements..."
-
+pip3 install numpy
 # Install Python packages
 pip3 install requests aiohttp
 
