@@ -608,9 +608,4 @@ def main():
         print("🧹 Linux cleanup completed")
 
 
-if __name__ == "__main__":
-    # Suppress additional warnings for cleaner output
-    warnings.filterwarnings('ignore', category=RuntimeWarning)
-    warnings.filterwarnings('ignore', category=DeprecationWarning)
-    
-    main() 
+main() 
